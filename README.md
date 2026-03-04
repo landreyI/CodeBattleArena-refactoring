@@ -17,7 +17,7 @@ This repository contains the refactored version of the CodeBattle Arena platform
 | **Backend** | .NET 9 / ASP.NET Core | Core API and business logic |
 | **Frontend** | React / TypeScript | User interface and real-time state management |
 | **Real-time** | SignalR (WebSockets) | Bi-directional communication |
-| **Persistence**| PostgreSQL (EF Core) | Relational data and notification storage |
+| **Persistence**| MSSQL (EF Core) | Relational data and notification storage |
 | **Caching** | Redis | Distributed presence and atomic counters |
 | **Messaging** | RabbitMQ / MassTransit | Asynchronous AI task processing |
 | **AI Integration**| Google Gemini API | Automated task and test case generation |
