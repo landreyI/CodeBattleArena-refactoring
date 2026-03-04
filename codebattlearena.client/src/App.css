@@ -1,0 +1,376 @@
+﻿/* -------------------- БАЗА -------------------- */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Fira Code', monospace;
+    color: var(--color-foreground);
+    background: var(--color-background);
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-main {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    align-items: center;
+}
+
+/* -------------------- HEADER -------------------- */
+.header {
+    background-color: var(--color-header-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-2xl);
+    padding: 0.5rem 1rem;
+    margin: 1rem 1rem 0rem 1rem;
+    z-index: 1;
+}
+
+
+
+/* -------------------- FOOTER -------------------- */
+footer.footer {
+    flex-shrink: 0;
+    background-color: var(--color-footer-bg);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-2xl);
+    padding: 1.5rem;
+    text-align: center;
+    margin: 0rem 1rem 1rem 1rem;
+    z-index: 1;
+}
+
+.footer p {
+    color: var(--color-footer-foreground);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+    .footer p:hover {
+        color: var(--color-primary);
+    }
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+    .social-link:hover {
+        transform: scale(1.1);
+    }
+
+    .social-link img {
+        filter: brightness(1);
+        transition: filter 0.3s ease;
+    }
+
+    .social-link:hover img {
+        filter: brightness(1.2);
+    }
+
+/* -------------------- NAVIGATION -------------------- */
+.nav-link {
+    position: relative;
+    color: var(--color-header-foreground);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: var(--color-primary);
+    }
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--color-primary);
+        transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+/* -------------------- DROP DOWN MENU -------------------- */
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    width: 12rem;
+    background-color: var(--color-popover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    z-index: 50;
+    animation: fadeIn 0.2s ease-in-out;
+    overflow: hidden;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-popover-foreground);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .dropdown-item:hover {
+        background-color: var(--color-primary);
+        color: var(--color-primary-foreground);
+    }
+
+/* -------------------- TEXT AND CARD -------------------- */
+h1, h2, h3 {
+    color: var(--color-primary);
+    transition: color 0.3s ease;
+}
+
+.bg-muted-card {
+    background-color: rgba(0, 0, 0, 0.07); /* полупрозрачный черный */
+    backdrop-filter: blur(4px);
+}
+
+.glow-box {
+    background-color: var(--color-glow-box);
+    border-radius: var(--radius-2xl);
+    box-shadow: 0 0 5px var(--color-primary);
+    transition: box-shadow 0.3s ease;
+    padding: 1.5rem 2.5rem;
+    display: inline-block;
+    width: auto;
+}
+
+    .glow-box:hover {
+        box-shadow: 0 0 15px var(--color-primary);
+    }
+
+@layer utilities {
+    .glow-3d {
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4), /* имитация глубины */
+        0 0 5px var(--color-primary), 0 0 10px var(--color-primary), 0 0 20px var(--color-primary);
+    }
+}
+/* -------------------- BUTTON -------------------- */
+.btn-animation {
+    display: inline-block;
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .btn-animation:hover {
+        transform: scale(1.05);
+    }
+
+.btn-green {
+    background-color: var(--color-green);
+    color: var(--color-primary-foreground);
+}
+
+    .btn-green:hover {
+        background-color: var(--color-green-pressed);
+    }
+
+.btn-gray {
+    background-color: var(--color-gray);
+    color: var(--color-primary-foreground);
+}
+
+    .btn-gray:hover {
+        background-color: var(--color-gray-pressed);
+    }
+
+.btn-red {
+    background-color: var(--color-red);
+    color: var(--color-primary-foreground);
+}
+
+    .btn-red:hover {
+        background-color: var(--color-red-pressed);
+    }
+
+.btn-yellow {
+    background-color: var(--color-yellow);
+    color: var(--color-primary-foreground);
+}
+
+    .btn-yellow:hover {
+        background-color: var(--color-yellow-pressed);
+    }
+
+
+/* -------------------- LEAGUES -------------------- */
+.league-bronze {
+    background-color: var(--bronze);
+    border: 2px solid var(--bronze);
+    box-shadow: var(--bronze-shadow);
+    border-radius: var(--radius-xl);
+}
+
+.league-silver {
+    background-color: var(--silver);
+    border: 2px solid var(--silver);
+    box-shadow: var(--silver-shadow);
+    border-radius: var(--radius-xl);
+}
+
+.league-gold {
+    background-color: var(--gold);
+    border: 2px solid var(--gold);
+    box-shadow: var(--gold-shadow);
+    border-radius: var(--radius-xl);
+}
+
+.league-platinum {
+    background-color: var(--platinum);
+    border: 2px solid var(--platinum);
+    box-shadow: var(--platinum-shadow);
+    border-radius: var(--radius-xl);
+}
+
+.league-diamond {
+    background-color: var(--diamond);
+    border: 2px solid var(--diamond);
+    box-shadow: var(--diamond-shadow);
+    border-radius: var(--radius-xl);
+}
+
+.league-master {
+    background-color: var(--master);
+    border: 2px solid var(--master);
+    box-shadow: var(--master-shadow);
+    border-radius: var(--radius-xl);
+}
+
+
+
+.clip-custom-shape {
+    --r: 20px; /* the radius */
+    --s: 100px; /* size of inner curve */
+    --x: 20px; /* horizontal offset (no percentage) */
+    --y: 10px; /* vertical offset (no percentage) */
+
+    aspect-ratio: 1;
+    border-radius: var(--r);
+    --_m: /calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%);
+    --_g: conic-gradient(from 180deg at var(--r) calc(100% - var(--r)),#0000 25%,#000 0);
+    --_d: (var(--s) + var(--r));
+    mask: calc(var(--_d) + var(--x)) 100% var(--_m), 0 calc(100% - var(--_d) - var(--y)) var(--_m), radial-gradient(var(--s) at 0 100%,#0000 99%,#000 calc(100% + 1px)) calc(var(--r) + var(--x)) calc(-1*var(--r) - var(--y)), var(--_g) calc(var(--_d) + var(--x)) 0, var(--_g) 0 calc(-1*var(--_d) - var(--y));
+    mask-repeat: no-repeat;
+}
+
+.background-bubbles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* -------------------- BUBBLES -------------------- */
+
+.bubble {
+    position: absolute;
+    background: var(--color-bubbles);
+    border-radius: 50%;
+    pointer-events: none;
+    filter: drop-shadow(0 0 15px var(--color-bubbles));
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px) translateX(0px);
+    }
+
+    50% {
+        transform: translateY(-100px) translateX(20px);
+    }
+
+    100% {
+        transform: translateY(0px) translateX(0px);
+    }
+}
+
+.float-slow {
+    animation: float 25s ease-in-out infinite;
+    animation-delay: 0s;
+}
+
+.float-medium {
+    animation: float 18s ease-in-out infinite;
+    animation-delay: 3s;
+}
+
+.float-fast {
+    animation: float 12s ease-in-out infinite;
+    animation-delay: 6s;
+}
+
+/* --------------------  -------------------- */
+
+@keyframes spin-slow {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.orbit-rotate {
+    animation: spin-slow 60s linear infinite;
+    transform-origin: center;
+}
+
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .app-main {
+        padding: 1rem;
+    }
+
+    .header {
+        padding: 0.75rem;
+    }
+
+    .footer {
+        padding: 1rem;
+    }
+
+    .glow-box {
+        padding: 1rem;
+    }
+}

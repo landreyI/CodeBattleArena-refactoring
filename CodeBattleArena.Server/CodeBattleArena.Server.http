@@ -1,0 +1,6 @@
+@CodeBattleArena.Server_HostAddress = http://localhost:5159
+
+GET {{CodeBattleArena.Server_HostAddress}}/codebattlearena/
+Accept: application/json
+
+###

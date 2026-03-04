@@ -1,0 +1,180 @@
+:root {
+    --background-default: linear-gradient(135deg, #f2f2f2, #d0d0d0, #ececec, #e4e4e4, #f5f5f5, #d9e4ea);
+
+    --gradient-colors: #fbc4f4, #ffe6fa, #a8c6f9, #f2a6d9, #b1e7ff;
+    --background-cyberpunk: linear-gradient(135deg, var(--gradient-colors));
+}
+
+.dark {
+    --background-default: linear-gradient(135deg, #353535, #4d4d4d, #6f7376, #3b3b3b, #555555, #353535);
+
+    --gradient-colors: #9e1ed1, #5b40d9, #1a3a8f, #a94a9e, #61c0ff;
+    --background-cyberpunk: linear-gradient(135deg, var(--gradient-colors));
+}
+
+.background-default {
+    background: url("data:image/svg+xml;utf8,\
+        <svg xmlns='http://www.w3.org/2000/svg' width='600' height='300'>\
+        <defs>\
+        <pattern id='p' patternUnits='userSpaceOnUse' width='100' height='100'>\
+        <text x='10' y='100' transform='rotate(-45 0,100)' font-size='15' fill='rgba(0,0,0,0.08)' font-family='Arial'>basic background</text>\
+        </pattern>\
+        </defs>\
+        <rect width='100%' height='100%' fill='url(%23p)'/></svg>"), var(--background-default);
+    background-size: auto, 1000% 1000%;
+    background-repeat: repeat, no-repeat;
+    background-position: center, center;
+}
+
+
+.background-cyberpunk {
+    background: var(--background-cyberpunk);
+    background-size: 1000% 1000%;
+    background-repeat: no-repeat;
+    background-position: center;
+    backface-visibility: hidden;
+    will-change: background-position;
+}
+
+
+.title-bronze {
+    color: var(--color-bronze);
+}
+
+.title-silver {
+    color: var(--color-gray);
+}
+
+.title-gold {
+    color: var(--color-yellow);
+}
+
+.title-diamond {
+    color: var(--color-blue);
+}
+
+.title-platinum {
+    color: var(--color-purple);
+}
+
+.title-master {
+    color: var(--color-red);
+}
+
+
+.frame-cyberpunk {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: none;
+    border-radius: var(--radius-2xl);
+    background: transparent;
+    z-index: 0;
+}
+
+    .frame-cyberpunk::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius-2xl);
+        background: linear-gradient(var(--angle), var(--gradient-colors));
+        animation: 8s rotate linear infinite;
+        z-index: -1;
+        /* Маска, создающая рамку */
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        padding: 4px; /* равен размеру "рамки" */
+        box-sizing: border-box;
+    }
+
+
+.orbiting-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: none;
+    border-radius: var(--radius-2xl);
+    background: transparent;
+    z-index: 0;
+    --stripe-opacity-before: 1;
+    --stripe-opacity-after: 0; /* по умолчанию одна полоска */
+}
+
+    .orbiting-frame.two-stripes {
+        --stripe-opacity-after: 1; /* при двух полосках включаем вторую */
+    }
+
+    .orbiting-frame::before,
+    .orbiting-frame::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background-image: conic-gradient(from var(--angle), transparent 75%, var(--color-primary));
+        animation: spin 3s linear infinite;
+        z-index: -1;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        padding: 4px;
+        box-sizing: border-box;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .orbiting-frame::before {
+        opacity: var(--stripe-opacity-before);
+        background-image: conic-gradient(from var(--angle), transparent 75%, var(--color-primary));
+    }
+
+    .orbiting-frame::after {
+        opacity: var(--stripe-opacity-after);
+        background-image: conic-gradient(from calc(var(--angle) + 180deg), transparent 75%, var(--color-primary));
+    }
+
+@keyframes spin {
+    from {
+        --angle: 0deg;
+    }
+
+    to {
+        --angle: 360deg;
+    }
+}
+
+
+@keyframes rotate {
+    to {
+        --angle: 360deg;
+    }
+}
+
+
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+
+
+/* ВРАЩАЛКА
+.frame-orbiting-stripe {
+    --border-angle: 0deg;
+    --border-color: #00ff00;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: var(--radius-2xl);
+    z-index: 0;
+    padding: 4px;
+    background: linear-gradient(white, white) padding-box, conic-gradient(from var(--angle), transparent 0deg, var(--border-color) 30deg, transparent 60deg) border-box;
+    animation: spin 2s linear infinite;
+    border: 4px solid transparent; 
+    box-sizing: border-box;
+}
+*/
