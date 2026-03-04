@@ -4,7 +4,6 @@ using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Common.Interfaces.Notifications;
 using CodeBattleArena.Application.Common.Models.Dtos;
 using CodeBattleArena.Domain.Enums;
-using CodeBattleArena.Infrastructure.SignalR.Services;
 using MassTransit;
 using MediatR;
 
@@ -53,10 +52,6 @@ namespace CodeBattleArena.Infrastructure.Messaging.Consumers
                     $"AI generated metadata for your programming task: '{aiResult.Value.Name}'",
                     NotificationType.TaskGenerated,
                     aiResult.Value.Id);
-
-
-                await _taskNotificationService.NotifyTaskUpdatedGroupAsync(dto);
-                await _taskNotificationService.NotifyTaskUpdatedAllAsync(dto);
             }
         }
     }

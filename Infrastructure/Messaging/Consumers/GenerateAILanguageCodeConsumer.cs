@@ -39,10 +39,6 @@ namespace CodeBattleArena.Infrastructure.Messaging.Consumers
                 aiResponse.IsSuccess,
                 aiResponse.IsFailure ? aiResponse.Error.Message : null
             );
-
-            var dto = _mapper.Map<ProgrammingTaskDto>(aiResponse.Value.Item1);
-            await _taskNotificationService.NotifyTaskUpdatedGroupAsync(dto);
-            await _taskNotificationService.NotifyTaskUpdatedAllAsync(dto);
         }
     }
 }

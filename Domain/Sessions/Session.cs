@@ -150,6 +150,10 @@ namespace CodeBattleArena.Domain.Sessions
             return Result.Success();
         }
 
+        public void Delete()
+        {
+            AddDomainEvent(new SessionDeletedIntegrationEvent(this.Id));
+        }
         public Result Start()
         {
             if (Status != GameStatus.Waiting)

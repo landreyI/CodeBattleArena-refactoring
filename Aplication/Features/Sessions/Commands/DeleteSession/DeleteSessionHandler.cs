@@ -1,12 +1,12 @@
 ﻿using CodeBattleArena.Application.Common.Interfaces;
-using CodeBattleArena.Application.Features.Sessions.Commands.FinishGame;
 using CodeBattleArena.Application.Features.Sessions.Interfaces;
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Sessions;
+using MediatR;
 
 namespace CodeBattleArena.Application.Features.Sessions.Commands.DeleteSession
 {
-    public class DeleteSessionHandler
+    public class DeleteSessionHandler : IRequestHandler<DeleteSessionCommand, Result<bool>>
     {
         private readonly IRepository<Session> _sessionRepository;
         private readonly ISessionAccessService _accessService;
@@ -21,7 +21,7 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.DeleteSession
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<bool>> Handle(FinishGameCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(DeleteSessionCommand request, CancellationToken cancellationToken)
         {
             var sessionResult = await _accessService.GetSessionForUpdateAsync(request.Id, cancellationToken);
 
@@ -30,6 +30,7 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.DeleteSession
 
             var session = sessionResult.Value;
 
+            session.Delete();
             _sessionRepository.Remove(session);
             
             await _unitOfWork.CommitAsync(cancellationToken);

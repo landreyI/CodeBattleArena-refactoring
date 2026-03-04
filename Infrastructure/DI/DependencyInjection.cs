@@ -1,7 +1,9 @@
 ﻿
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Common.Interfaces.Notifications;
+using CodeBattleArena.Application.Common.Security;
 using CodeBattleArena.Infrastructure.Identity;
+using CodeBattleArena.Infrastructure.Identity.Handlers;
 using CodeBattleArena.Infrastructure.Judge0;
 using CodeBattleArena.Infrastructure.Messaging.Consumers;
 using CodeBattleArena.Infrastructure.Persistence;
@@ -12,12 +14,14 @@ using CodeBattleArena.Infrastructure.SignalR.Services;
 using CodeBattleArena.Infrastructure.SignalR.Services.Notifications;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Polly;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text;
 
@@ -80,6 +84,16 @@ namespace CodeBattleArena.Infrastructure.DI
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanEditPolicy", policy =>
+                    policy.Requirements.Add(new CanEditRequirement()));
+                options.AddPolicy("CanModerationPolicy", policy =>
+                    policy.Requirements.Add(new CanModerationRequirement()));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, CanEditHandler>();
+            services.AddSingleton<IAuthorizationHandler, CanModerationHandler>();
 
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -94,7 +108,9 @@ namespace CodeBattleArena.Infrastructure.DI
             services.AddScoped<ISessionNotificationService, SessionNotificationService>();
             services.AddScoped<IPlayerNotificationService, PlayerNotificationService>();
             services.AddScoped<ITaskNotificationService, TaskNotificationService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
+            services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect("localhost:6379"));
             services.AddScoped<ICacheService, RedisCacheService>();
 
             services.AddHttpClient<IJudge0Client, Judge0Client>(client =>

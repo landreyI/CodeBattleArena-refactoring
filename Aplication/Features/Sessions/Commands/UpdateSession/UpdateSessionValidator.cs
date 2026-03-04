@@ -8,7 +8,8 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.UpdateSession
         {
             RuleFor(x => x.Name)
                 .NotEmpty().MaximumLength(20)
-                .WithMessage("Name session cannot be longer than 20 characters..");
+                .WithMessage("Name session cannot be longer than 20 characters..")
+                .When(x => x.Name != null);
 
             RuleFor(x => x.TimePlay)
                 .InclusiveBetween(5, 180)
@@ -17,7 +18,8 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.UpdateSession
 
             RuleFor(x => x.MaxPeople)
                 .InclusiveBetween(1, 10)
-                .WithMessage("The number of participants must be greater than zero and less than 11.");
+                .WithMessage("The number of participants must be greater than zero and less than 11.")
+                .When(x => x.Name != null);
         }
     }
 }

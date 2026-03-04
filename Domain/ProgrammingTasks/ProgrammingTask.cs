@@ -1,6 +1,8 @@
 ﻿using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Enums;
 using CodeBattleArena.Domain.Players;
+using CodeBattleArena.Domain.ProgrammingTasks.Events.Integration;
+using CodeBattleArena.Domain.ProgrammingTasks.Value_Objects;
 using CodeBattleArena.Domain.Sessions;
 using CodeBattleArena.Domain.TaskLanguages;
 using CodeBattleArena.Domain.TestCases;
@@ -47,7 +49,7 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
             CreatedAt = DateTime.UtcNow;
             IsGeneratedAI = isGeneratedAI;
 
-            // сделать доменное событие
+            AddDomainEvent(new ProgrammingTaskCreatedIntegrationEvent(this));
         }
 
         public static Result<ProgrammingTask> Create(
@@ -70,7 +72,7 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
                 name, description, difficulty, authorId, isGeneratedAI));
         }
 
-        public Result Update(string? name = null, string? description = null, Difficulty? difficulty = null, bool? isGeneratedAI = null)
+        public Result Update(string? name = null, string? description = null, Difficulty? difficulty = null, bool isGeneratedAI = false)
         {
             if(name != null)
             {
@@ -89,13 +91,15 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
             if (difficulty.HasValue)
                 Difficulty = difficulty.Value;
 
-            if (isGeneratedAI.HasValue)
-                IsGeneratedAI = isGeneratedAI.Value;
-
-            // сделать доменное событие
+            AddDomainEvent(new ProgrammingTaskUpdatedIntegrationEvent(this));
             return Result.Success();
         }
 
+        public void Delete()
+        {
+            // Мы передаем только Id, так как сущность скоро перестанет существовать
+            AddDomainEvent(new ProgrammingTaskDeletedIntegrationEvent(this.Id));
+        }
         public Result AddTestCase(string input, string expectedOutput, bool isHidden)
         {
             var testCaseResult = TestCase.Create(Id, input, expectedOutput, isHidden);
@@ -106,6 +110,8 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
             }
 
             _testCases.Add(testCaseResult.Value!);
+
+            AddDomainEvent(new ProgrammingTaskUpdatedIntegrationEvent(this));
             return Result.Success();
         }
 
@@ -120,12 +126,14 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
                 return Result.Failure(taskLangResult.Error);
 
             _taskLanguages.Add(taskLangResult.Value!);
+
+            AddDomainEvent(new ProgrammingTaskUpdatedIntegrationEvent(this));
             return Result.Success();
         }
 
-        public Result SyncTestCases(IEnumerable<(string Input, string ExpectedOutput)> newTests)
+        public Result SyncTestCases(IEnumerable<TestCaseInfo>? newTests)
         {
-            if (newTests == null || !newTests.Any())
+            if (newTests == null)
                 return Result.Success();
             var newTestsList = newTests.ToList();
             var inputsFromAi = newTestsList.Select(x => x.Input).ToHashSet();
@@ -139,27 +147,31 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
 
                 if (existingTest != null)
                 {
-                    // Обновляем существующий (EF Core сам проверит, изменились ли данные)
                     var resultUpdate = existingTest.Update(expectedOutput: output);
                     if (resultUpdate.IsFailure)
                         return Result.Failure(resultUpdate.Error);
                 }
                 else
                 {
-                    // Добавляем новый
                     var resultAdd = AddTestCase(input, output, isHidden: true);
                     if (resultAdd.IsFailure)
                         return Result.Failure(resultAdd.Error);
                 }
             }
 
+            AddDomainEvent(new ProgrammingTaskUpdatedIntegrationEvent(this));
             return Result.Success();
         }
 
-        public Result SyncTaskLanguages(IEnumerable<(Guid programmingLangId, string preparation, string verificationCode, bool isGeneratedAI)> taskLanguages)
+        public Result SyncTaskLanguages(IEnumerable<TaskLanguageInfo>? taskLanguages)
         {
-            if (taskLanguages == null || !taskLanguages.Any())
+            if (taskLanguages == null)
                 return Result.Success();
+            var newLeanguagesList = taskLanguages.ToList();
+            var lengIdFromAi = newLeanguagesList.Select(x => x.ProgrammingLangId).ToHashSet();
+
+            // Удаляем то, чего больше нет
+            _taskLanguages.RemoveAll(existing => !lengIdFromAi.Contains(existing.ProgrammingLangId));
 
             foreach (var (programmingLangId, preparation, verificationCode, isGeneratedAI) in taskLanguages)
             {
@@ -168,6 +180,7 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
                     return Result.Failure(upsertResult.Error);
             }
 
+            AddDomainEvent(new ProgrammingTaskUpdatedIntegrationEvent(this));
             return Result.Success();
         }
 
@@ -186,6 +199,8 @@ namespace CodeBattleArena.Domain.ProgrammingTasks
                 if (addResult.IsFailure)
                     return Result.Failure(addResult.Error);
             }
+
+            AddDomainEvent(new ProgrammingTaskUpdatedIntegrationEvent(this));
             return Result.Success();
         }
     }

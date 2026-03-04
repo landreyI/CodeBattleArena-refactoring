@@ -33,7 +33,7 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.CreateSession
             var resultSession = Session.Create(
                 request.Name, 
                 currentPlayerId.Value,
-                request.State, 
+                request.State,
                 request.MaxPeople, 
                 request.Password, 
                 request.ProgrammingLangId, 

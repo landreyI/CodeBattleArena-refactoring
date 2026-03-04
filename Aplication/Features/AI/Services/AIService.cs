@@ -7,6 +7,7 @@ using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Enums;
 using CodeBattleArena.Domain.ProgrammingLanguages;
 using CodeBattleArena.Domain.ProgrammingTasks;
+using CodeBattleArena.Domain.ProgrammingTasks.Value_Objects;
 using CodeBattleArena.Domain.TaskLanguages;
 using Microsoft.Extensions.Logging;
 
@@ -73,11 +74,22 @@ namespace CodeBattleArena.Application.Features.AI.Services
                 if (createResult.IsFailure) 
                     return Result<ProgrammingTask>.Failure(createResult.Error);
                 task = createResult.Value;
+
+                var resultSyncTestCases = task.SyncTestCases(finalGeneratedDto.TestCases.Select(tc => new TestCaseInfo(tc.Input, tc.ExpectedOutput)));
+                if (resultSyncTestCases.IsFailure)
+                    return Result<ProgrammingTask>.Failure(resultSyncTestCases.Error);
+
                 await _taskRepository.AddAsync(task, ct);
             }
             else
             {
-                task.Update(finalGeneratedDto.Name, finalGeneratedDto.Description, Enum.Parse<Difficulty>(generateAITaskMessage.Difficulty, true), true);
+                var resultUpdate = task.Update(finalGeneratedDto.Name, finalGeneratedDto.Description, Enum.Parse<Difficulty>(generateAITaskMessage.Difficulty, true), true);
+                if (resultUpdate.IsFailure)
+                    return Result<ProgrammingTask>.Failure(resultUpdate.Error);
+
+                var resultSyncTestCases = task.SyncTestCases(finalGeneratedDto.TestCases.Select(tc => new TestCaseInfo(tc.Input, tc.ExpectedOutput)));
+                if (resultSyncTestCases.IsFailure)
+                    return Result<ProgrammingTask>.Failure(resultSyncTestCases.Error);
             }
 
             return Result<ProgrammingTask>.Success(task);
