@@ -7,7 +7,9 @@ namespace CodeBattleArena.Application.Common.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : BaseEntity<Guid>
     {
+        Task<Guid?> GetIdBySpecAsync(ISpecification<TEntity> spec, CancellationToken ct = default);
         Task<TEntity?> GetByIdAsync(Guid id, bool asNoTracking = false, CancellationToken ct = default);
+        Task<int> CountAsync(ISpecification<TEntity> spec, CancellationToken ct = default);
         Task<TEntity?> GetBySpecAsync(ISpecification<TEntity> spec, CancellationToken ct = default);
         Task<List<TEntity>> GetListBySpecAsync(ISpecification<TEntity> spec, CancellationToken ct = default);
         Task<bool> AnyAsync(ISpecification<TEntity> spec, CancellationToken ct = default);

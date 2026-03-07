@@ -8,7 +8,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace CodeBattleArena.Application.Features.AI.Services
+namespace CodeBattleArena.Infrastructure.AI.Services
 {
     public class AIGenerationGateway : IAIGenerationGateway
     {

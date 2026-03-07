@@ -8,21 +8,26 @@ namespace CodeBattleArena.Application.Features.Sessions.Specifications
     public class SessionsListSpec : SessionBaseSpec
     {
         // сессии конкретного игрока
-        public SessionsListSpec(Guid playerId) : base()
+        public SessionsListSpec(Guid playerId, SessionFilter filter) : base()
         {
             AddCommonIncludes();
             Query.Where(s => s.PlayerSessions.Any(p => p.PlayerId == playerId))
                  .AsNoTracking()
                  .OrderByDescending(x => x.DateCreating);
+
+            ApplyFilter(filter);
         }
 
         public SessionsListSpec(SessionFilter filter) : base()
         {
             AddCommonIncludes();
+            Query.AsNoTracking().OrderByDescending(x => x.DateCreating);
 
-            Query.AsNoTracking()
-                 .OrderByDescending(x => x.DateCreating);
+            ApplyFilter(filter);
+        }
 
+        private void ApplyFilter(SessionFilter filter)
+        {
             Query.Where(x => x.ProgrammingLangId == filter.IdLang, filter.IdLang.HasValue);
 
             Query.Where(x => x.Access.MaxPeople <= filter.MaxPeople, filter.MaxPeople.HasValue);
@@ -38,6 +43,9 @@ namespace CodeBattleArena.Application.Features.Sessions.Specifications
             {
                 Query.Where(x => x.Status == statusEnum);
             }
+
+            Query.Skip((filter.PageNumber - 1) * filter.PageSize)
+                 .Take(filter.PageSize);
         }
     }
 }

@@ -7,22 +7,28 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Specifications
 {
     public class ProgrammingTasksListSpec : ProgrammingTaskBaseSpec
     {
-        // задачи созданные конкртеным игроком
-        public ProgrammingTasksListSpec(Guid playerId) : base()
-        {
-            AddCommonIncludes();
-            Query.Where(s => s.AuthorId == playerId)
-                 .AsNoTracking()
-                 .OrderByDescending(x => x.CreatedAt);
-        }
-
+        // Конструктор для общего списка
         public ProgrammingTasksListSpec(ProgrammingTaskFilter filter) : base()
         {
             AddCommonIncludes();
+            Query.AsNoTracking().OrderByDescending(x => x.CreatedAt);
 
-            Query.AsNoTracking()
-                 .OrderByDescending(x => x.CreatedAt);
+            ApplyFilter(filter);
+        }
 
+        // Конструктор для списка конкретного игрока
+        public ProgrammingTasksListSpec(Guid playerId, ProgrammingTaskFilter filter) : base()
+        {
+            AddCommonIncludes();
+            Query.AsNoTracking().OrderByDescending(x => x.CreatedAt);
+
+            Query.Where(s => s.AuthorId == playerId);
+
+            ApplyFilter(filter);
+        }
+
+        private void ApplyFilter(ProgrammingTaskFilter filter)
+        {
             Query.Where(x => x.TaskLanguages.Any(tk => tk.ProgrammingLangId == filter.IdLang), filter.IdLang.HasValue);
 
             if (!string.IsNullOrWhiteSpace(filter.Difficulty) &&
@@ -30,6 +36,9 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Specifications
             {
                 Query.Where(x => x.Difficulty == stateEnum);
             }
+
+            Query.Skip((filter.PageNumber - 1) * filter.PageSize)
+                 .Take(filter.PageSize);
         }
     }
 }

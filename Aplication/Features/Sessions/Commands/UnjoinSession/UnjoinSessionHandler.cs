@@ -1,9 +1,11 @@
 ﻿
+using CodeBattleArena.Application.Common;
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Features.Sessions.Specifications;
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Sessions;
 using MediatR;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace CodeBattleArena.Application.Features.Sessions.Commands.UnjoinSession
 {
@@ -12,11 +14,13 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.UnjoinSession
         private readonly IRepository<Session> _sessionRepository;
         private readonly IIdentityService _identityService;
         private readonly IUnitOfWork _unitOfWork;
-        public UnjoinSessionHandler(IRepository<Session> sessionRepository, IIdentityService identityService, IUnitOfWork unitOfWork)
+        private readonly HybridCache _cache;
+        public UnjoinSessionHandler(IRepository<Session> sessionRepository, IIdentityService identityService, IUnitOfWork unitOfWork, HybridCache cache)
         {
             _sessionRepository = sessionRepository;
             _identityService = identityService;
             _unitOfWork = unitOfWork;
+            _cache = cache;
         }
         public async Task<Result<bool>> Handle(UnjoinSessionCommand request, CancellationToken cancellationToken)
         {
@@ -37,6 +41,9 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.UnjoinSession
                 _sessionRepository.Remove(activeSession);
 
             await _unitOfWork.CommitAsync(cancellationToken);
+
+            await _cache.RemoveAsync(CacheKeys.Sessions.Details(activeSession.Id), cancellationToken);
+            await _cache.RemoveByTagAsync(CacheKeys.Sessions.ListTag, cancellationToken);
 
             return Result<bool>.Success(true);
         }

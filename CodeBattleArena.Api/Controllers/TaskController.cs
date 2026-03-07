@@ -24,7 +24,7 @@ namespace CodeBattleArena.Api.Controllers
             => HandleResult(await _mediator.Send(new GetProgrammingTaskQuery(id), ct));
 
         [HttpGet]
-        public async Task<IActionResult> GetTasksList([FromQuery] ProgrammingTaskFilter? filter, CancellationToken ct)
+        public async Task<IActionResult> GetTasksList([FromQuery] ProgrammingTaskFilter filter, CancellationToken ct)
             => HandleResult(await _mediator.Send(new GetProgrammingTasksListQuery(filter), ct));
 
         [Authorize]

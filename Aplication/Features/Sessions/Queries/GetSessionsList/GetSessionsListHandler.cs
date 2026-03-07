@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CodeBattleArena.Application.Common;
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Common.Models.Dtos;
 using CodeBattleArena.Domain.Common;
@@ -7,20 +8,32 @@ using MediatR;
 
 namespace CodeBattleArena.Application.Features.Sessions.Queries.GetSessionsList
 {
-    public class GetProgrammingTasksListHandler : IRequestHandler<GetSessionsListQuery, Result<List<SessionDto>>>
+    public class GetSessionsListHandler
+    : IRequestHandler<GetSessionsListQuery, Result<PaginatedResult<SessionDto>>>
     {
         private readonly IRepository<Session> _sessionRepository;
         private readonly IMapper _mapper;
-        public GetProgrammingTasksListHandler(IRepository<Session> sessionRepository, IMapper mapper) 
+        public GetSessionsListHandler(IRepository<Session> sessionRepository, IMapper mapper) 
         { 
             _sessionRepository = sessionRepository;
             _mapper = mapper;
         }
-        public async Task<Result<List<SessionDto>>> Handle(GetSessionsListQuery request, CancellationToken ct)
+        public async Task<Result<PaginatedResult<SessionDto>>> Handle(GetSessionsListQuery request, CancellationToken ct)
         {
             var spec = new Specifications.SessionsListSpec(request.Filter);
+
             var sessions = await _sessionRepository.GetListBySpecAsync(spec, ct);
-            return Result<List<SessionDto>>.Success(_mapper.Map<List<SessionDto>>(sessions));
+            var totalCount = await _sessionRepository.CountAsync(spec, ct);
+
+            var dtos = _mapper.Map<List<SessionDto>>(sessions);
+
+            var result = new PaginatedResult<SessionDto>(
+                dtos,
+                totalCount,
+                request.Filter?.PageNumber ?? 1,
+                request.Filter?.PageSize ?? 15);
+
+            return Result<PaginatedResult<SessionDto>>.Success(result);
         }
     }
 }

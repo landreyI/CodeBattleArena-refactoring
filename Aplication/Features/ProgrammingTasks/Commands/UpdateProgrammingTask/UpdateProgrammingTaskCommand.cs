@@ -1,4 +1,5 @@
 ﻿
+using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Enums;
 using CodeBattleArena.Domain.ProgrammingTasks.Value_Objects;
@@ -11,9 +12,15 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Commands.UpdateP
         string? Name = null,
         string? Description = null,
         Difficulty? Difficulty = null
-    ) : IRequest<Result<bool>>
+    ) : IRequest<Result<bool>>, ICacheInvalidator
     {
         public IReadOnlyList<TestCaseInfo>? TestCases { get; init; }
         public IReadOnlyList<TaskLanguageInfo>? TaskLanguages { get; init; }
+
+        // Удаляем только одну конкретную карточку по ключу
+        public string[] CacheKeys => [Common.CacheKeys.Tasks.Details(Id)];
+
+        // Удаляем ВСЕ списки задач, потому что состав изменился
+        public string[] Tags => [Common.CacheKeys.Tasks.ListTag];
     }
 }

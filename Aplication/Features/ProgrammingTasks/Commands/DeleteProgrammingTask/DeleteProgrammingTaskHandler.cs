@@ -1,8 +1,6 @@
 ﻿
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Specifications;
-using CodeBattleArena.Application.Features.Sessions.Commands.DeleteSession;
-using CodeBattleArena.Application.Features.Sessions.Interfaces;
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.ProgrammingTasks;
 using MediatR;

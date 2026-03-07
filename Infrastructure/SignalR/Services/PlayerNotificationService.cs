@@ -3,7 +3,7 @@ using CodeBattleArena.Application.Common.Models.Dtos;
 using CodeBattleArena.Infrastructure.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
-namespace CodeBattleArena.Infrastructure.SignalR.Services.Notifications
+namespace CodeBattleArena.Infrastructure.SignalR.Services
 {
     public class PlayerNotificationService : IPlayerNotificationService
     {

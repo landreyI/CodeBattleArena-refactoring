@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CodeBattleArena.Application.Common;
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Common.Models.Dtos;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Specifications;
@@ -8,7 +9,8 @@ using MediatR;
 
 namespace CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetProgrammingTasksList
 {
-    public class GetProgrammingTasksListHandler : IRequestHandler<GetProgrammingTasksListQuery, Result<List<ProgrammingTaskDto>>>
+    public class GetProgrammingTasksListHandler
+    : IRequestHandler<GetProgrammingTasksListQuery, Result<PaginatedResult<ProgrammingTaskDto>>>
     {
         private readonly IRepository<ProgrammingTask> _taskRepository;
         private readonly IMapper _mapper;
@@ -17,11 +19,24 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetProgr
             _taskRepository = taskRepository;
             _mapper = mapper;
         }
-        public async Task<Result<List<ProgrammingTaskDto>>> Handle(GetProgrammingTasksListQuery request, CancellationToken ct)
+        public async Task<Result<PaginatedResult<ProgrammingTaskDto>>> Handle(
+        GetProgrammingTasksListQuery request, CancellationToken ct)
         {
             var spec = new ProgrammingTasksListSpec(request.Filter);
+
             var tasks = await _taskRepository.GetListBySpecAsync(spec, ct);
-            return Result<List<ProgrammingTaskDto>>.Success(_mapper.Map<List<ProgrammingTaskDto>>(tasks));
+
+            var totalCount = await _taskRepository.CountAsync(spec, ct);
+
+            var dtos = _mapper.Map<List<ProgrammingTaskDto>>(tasks);
+
+            var result = new PaginatedResult<ProgrammingTaskDto>(
+                dtos,
+                totalCount,
+                request.Filter?.PageNumber ?? 1,
+                request.Filter?.PageSize ?? 15);
+
+            return Result<PaginatedResult<ProgrammingTaskDto>>.Success(result);
         }
     }
 }

@@ -11,7 +11,7 @@ using CodeBattleArena.Domain.ProgrammingTasks.Value_Objects;
 using CodeBattleArena.Domain.TaskLanguages;
 using Microsoft.Extensions.Logging;
 
-namespace CodeBattleArena.Application.Features.AI.Services
+namespace CodeBattleArena.Infrastructure.AI.Services
 {
     public class AIService : IAIService
     {

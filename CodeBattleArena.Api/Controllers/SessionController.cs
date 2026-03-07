@@ -46,7 +46,7 @@ namespace CodeBattleArena.Api.Controllers
             => HandleResult(await _mediator.Send(new GetSessionQuery(id), ct));
 
         [HttpGet]
-        public async Task<IActionResult> GetSessionsList([FromQuery] SessionFilter? filter, CancellationToken ct)
+        public async Task<IActionResult> GetSessionsList([FromQuery] SessionFilter filter, CancellationToken ct)
             => HandleResult(await _mediator.Send(new GetSessionsListQuery(filter), ct));
 
         [Authorize]

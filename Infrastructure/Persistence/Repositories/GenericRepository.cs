@@ -2,6 +2,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Domain.Common;
+using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -18,6 +19,13 @@ namespace CodeBattleArena.Infrastructure.Persistence.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
+        public async Task<Guid?> GetIdBySpecAsync(ISpecification<TEntity> spec, CancellationToken ct = default)
+        {
+            return await SpecificationEvaluator.Default
+                .GetQuery(_dbSet.AsQueryable(), spec)
+                .Select(s => s.Id)
+                .FirstOrDefaultAsync(ct);
+        }
         public async Task<TEntity?> GetByIdAsync(Guid id, bool asNoTracking = false, CancellationToken ct = default)
         {
             if (asNoTracking)
@@ -25,6 +33,13 @@ namespace CodeBattleArena.Infrastructure.Persistence.Repositories
 
             // FindAsync идеален для команд, так как ищет в локальном кеше контекста
             return await _dbSet.FindAsync(new object[] { id }, ct);
+        }
+
+        public async Task<int> CountAsync(ISpecification<TEntity> spec, CancellationToken ct = default)
+        {
+            var query = SpecificationEvaluator.Default.GetQuery(_dbSet.AsQueryable(), spec);
+
+            return await query.CountAsync(ct);
         }
 
         public async Task<TEntity?> GetBySpecAsync(ISpecification<TEntity> spec, CancellationToken ct = default)

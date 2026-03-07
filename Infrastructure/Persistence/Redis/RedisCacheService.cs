@@ -1,27 +1,32 @@
 ﻿using CodeBattleArena.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http.Json;
 using StackExchange.Redis;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 
 namespace CodeBattleArena.Infrastructure.Persistence.Redis
 {
     public class RedisCacheService : ICacheService
     {
         private readonly IDatabase _db;
+        private readonly JsonSerializerOptions _options;
 
-        public RedisCacheService(IConnectionMultiplexer redis)
+        public RedisCacheService(IConnectionMultiplexer redis, IOptions<JsonOptions> jsonOptions)
         {
             _db = redis.GetDatabase();
+
+            _options = jsonOptions.Value.SerializerOptions;
         }
 
         public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
         {
             var value = await _db.StringGetAsync(key);
-            return value.IsNullOrEmpty ? default : JsonSerializer.Deserialize<T>(value!);
+            return value.IsNullOrEmpty ? default : JsonSerializer.Deserialize<T>(value!, _options);
         }
 
         public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null, CancellationToken ct = default)
         {
-            var json = JsonSerializer.Serialize(value);
+            var json = JsonSerializer.Serialize(value, _options);
 
             await _db.StringSetAsync(key, json, expiry, keepTtl: false);
         }

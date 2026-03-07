@@ -1,7 +1,5 @@
 ﻿using CodeBattleArena.Application.Common.Behaviours;
-using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Common.Settings;
-using CodeBattleArena.Application.Features.AI.Services;
 using CodeBattleArena.Application.Features.Quests.Interfaces;
 using CodeBattleArena.Application.Features.Quests.Services;
 using CodeBattleArena.Application.Features.Quests.Strategies;
@@ -12,7 +10,6 @@ using MediatR;
 using MediatR.NotificationPublishers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
 using System.Reflection;
 
 namespace CodeBattleArena.Application.DI
@@ -30,6 +27,7 @@ namespace CodeBattleArena.Application.DI
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
                 // Notify will be called in parallel 
                 cfg.NotificationPublisherType = typeof(TaskWhenAllPublisher);
             });
@@ -43,17 +41,6 @@ namespace CodeBattleArena.Application.DI
             services.AddScoped<IQuestStrategy, MatchPlayedStrategy>();
             services.AddScoped<IQuestStrategy, WinCountStrategy>();
             //services.AddScoped<IQuestStrategy, LeagueUpgradeStrategy>();
-
-            services.AddHttpClient<IAIGenerationGateway, AIGenerationGateway>(client =>
-            {
-                // Базовый адрес Google AI
-                client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/");
-                client.Timeout = TimeSpan.FromSeconds(120); // ИИ может думать долго
-            })
-            // Добавляем политику повторов на случай сетевых сбоев
-            .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(2)));
-
-            services.AddScoped<IAIService, AIService>();
 
             return services;
         }
