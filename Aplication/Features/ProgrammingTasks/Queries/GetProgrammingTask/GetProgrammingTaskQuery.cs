@@ -9,7 +9,7 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetProgr
 {
     public record GetProgrammingTaskQuery(Guid Id) : IRequest<Result<ProgrammingTaskDto>>, ICachableRequest
     {
-        public string CacheKey => CacheKeys.Tasks.Details(Id);
+        public string CacheKey => CacheKeys.Items.Details(Id);
         public TimeSpan? Expiration => TimeSpan.FromMinutes(10);
     }
 }

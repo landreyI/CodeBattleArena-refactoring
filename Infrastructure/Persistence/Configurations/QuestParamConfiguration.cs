@@ -1,6 +1,5 @@
 ﻿
 using CodeBattleArena.Domain.QuestParams;
-using CodeBattleArena.Domain.Quests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,7 +23,7 @@ namespace CodeBattleArena.Infrastructure.Persistence.Configurations
             builder.HasIndex(p => new { p.QuestId, p.Key })
                 .IsUnique();
 
-            builder.HasOne<Quest>()
+            builder.HasOne(qp => qp.Quest)
                    .WithMany(q => q.Params)
                    .HasForeignKey(qp => qp.QuestId)
                    .OnDelete(DeleteBehavior.Cascade);

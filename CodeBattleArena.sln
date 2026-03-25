@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBattleArena.Application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBattleArena.Api", "CodeBattleArena.Api\CodeBattleArena.Api.csproj", "{C9F5CE9D-CD1F-49FE-9A74-3F9F669EBF1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{BD528999-8269-424F-BBBC-024084702B2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{C9F5CE9D-CD1F-49FE-9A74-3F9F669EBF1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9F5CE9D-CD1F-49FE-9A74-3F9F669EBF1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9F5CE9D-CD1F-49FE-9A74-3F9F669EBF1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD528999-8269-424F-BBBC-024084702B2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD528999-8269-424F-BBBC-024084702B2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD528999-8269-424F-BBBC-024084702B2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD528999-8269-424F-BBBC-024084702B2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

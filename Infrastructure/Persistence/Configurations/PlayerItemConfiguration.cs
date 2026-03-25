@@ -13,7 +13,7 @@ namespace CodeBattleArena.Infrastructure.Persistence.Configurations
             builder.HasIndex(ps => new { ps.PlayerId, ps.ItemId }).IsUnique();
 
             builder.Property(pi => pi.AcquiredAt)
-               .IsRequired();
+                   .IsRequired();
 
             builder.Property(pi => pi.IsEquipped)
                    .HasDefaultValue(false);
@@ -22,6 +22,11 @@ namespace CodeBattleArena.Infrastructure.Persistence.Configurations
                    .WithMany(p => p.PlayerItems)
                    .HasForeignKey(ps => ps.PlayerId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(pi => pi.Payer)
+                   .WithMany(p => p.PayerItems)
+                   .HasForeignKey(pi => pi.PayerId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(ps => ps.Item)
                    .WithMany(s => s.PlayerItems)

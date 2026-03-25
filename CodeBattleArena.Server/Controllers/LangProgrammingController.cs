@@ -1,7 +1,6 @@
-﻿using CodeBattleArena.Server.Services.DBServices;
+﻿
 using CodeBattleArena.Server.Services.DBServices.IDBServices;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace CodeBattleArena.Server.Controllers
 {

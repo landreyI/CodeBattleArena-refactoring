@@ -6,6 +6,8 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Commands.UpdateP
     {
         public UpdateProgrammingTaskValidator()
         {
+            RuleFor(x => x.Id).NotEmpty().WithMessage("ProgrammingTaskId is required.");
+
             RuleFor(x => x.Name)
                 .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.")
                 .When(x => x.Name != null);

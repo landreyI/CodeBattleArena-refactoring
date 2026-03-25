@@ -10,18 +10,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace CodeBattleArena.Api.Controllers
 {
     [ApiController]
-    [Authorize]
     [Authorize(Policy = "CanEditPolicy")]
     [Route("api/admin/tasks")]
     public class AdminTasksController : BaseApiController
     {
         private readonly IMediator _mediator;
-        private readonly IIdentityService _identityService;
 
-        public AdminTasksController(IMediator mediator, IIdentityService identityService)
+        public AdminTasksController(IMediator mediator)
         {
             _mediator = mediator;
-            _identityService = identityService;
         }
 
         [HttpPost]

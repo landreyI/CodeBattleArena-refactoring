@@ -1,6 +1,7 @@
 ﻿
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Friendships;
+using CodeBattleArena.Domain.Items;
 using CodeBattleArena.Domain.Leagues;
 using CodeBattleArena.Domain.PlayerItems;
 using CodeBattleArena.Domain.PlayerQuests;
@@ -32,6 +33,9 @@ namespace CodeBattleArena.Domain.Players
 
         private readonly List<PlayerItem> _playerItems = new();
         public virtual ICollection<PlayerItem> PlayerItems => _playerItems.AsReadOnly();
+
+        private readonly List<PlayerItem> _payerItems = new();
+        public virtual ICollection<PlayerItem> PayerItems => _payerItems.AsReadOnly();
 
         private readonly List<PlayerQuest> _playerQuests = new();
         public virtual ICollection<PlayerQuest> PlayerQuests => _playerQuests.AsReadOnly();
@@ -96,6 +100,38 @@ namespace CodeBattleArena.Domain.Players
 
             RefreshToken = token;
             RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(days);
+
+            return Result.Success();
+        }
+
+        public Result BuyItem(Item item)
+        {
+            if (Wallet.Coins < item.PriceCoin)
+                return Result.Failure(new Error("player.insufficient_funds", "Insufficient funds"));
+
+            Wallet.Spend(item.PriceCoin!.Value);
+
+            // Здесь можно добавить доменное событие ItemPurchasedDomainEvent
+            return Result.Success();
+        }
+
+        /// <remarks>
+        /// <para><b>IMPORTANT:</b> The 'PlayerItems' => 'Item' collection MUST be eagerly loaded (e.g., using .Include()) 
+        /// before calling this method.</para>
+        /// </remarks>
+        public Result EquipItem(PlayerItem playerItem)
+        {
+            var currentEquipped = PlayerItems
+                .FirstOrDefault(i => i.IsEquipped && i.Item!.Type == playerItem.Item!.Type);
+
+            if (currentEquipped != null)
+            {
+                var unequipResult = currentEquipped.Unequip();
+                if (unequipResult.IsFailure) return unequipResult;
+            }
+
+            var equipResult = playerItem.Equip();
+            if (equipResult.IsFailure) return equipResult;
 
             return Result.Success();
         }

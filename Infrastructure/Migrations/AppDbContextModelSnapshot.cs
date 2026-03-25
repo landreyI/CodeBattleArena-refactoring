@@ -169,12 +169,17 @@ namespace CodeBattleArena.Infrastructure.Migrations
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("PayerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("PlayerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ItemId");
+
+                    b.HasIndex("PayerId");
 
                     b.HasIndex("PlayerId", "ItemId")
                         .IsUnique();
@@ -361,17 +366,12 @@ namespace CodeBattleArena.Infrastructure.Migrations
                     b.Property<Guid>("QuestId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("QuestId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuestId1");
 
                     b.HasIndex("QuestId", "Key")
                         .IsUnique();
@@ -792,6 +792,12 @@ namespace CodeBattleArena.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CodeBattleArena.Domain.Players.Player", "Payer")
+                        .WithMany("PayerItems")
+                        .HasForeignKey("PayerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("CodeBattleArena.Domain.Players.Player", "Player")
                         .WithMany("PlayerItems")
                         .HasForeignKey("PlayerId")
@@ -799,6 +805,8 @@ namespace CodeBattleArena.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Item");
+
+                    b.Navigation("Payer");
 
                     b.Navigation("Player");
                 });
@@ -969,15 +977,11 @@ namespace CodeBattleArena.Infrastructure.Migrations
 
             modelBuilder.Entity("CodeBattleArena.Domain.QuestParams.QuestParam", b =>
                 {
-                    b.HasOne("CodeBattleArena.Domain.Quests.Quest", null)
+                    b.HasOne("CodeBattleArena.Domain.Quests.Quest", "Quest")
                         .WithMany("Params")
                         .HasForeignKey("QuestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CodeBattleArena.Domain.Quests.Quest", "Quest")
-                        .WithMany()
-                        .HasForeignKey("QuestId1");
 
                     b.Navigation("Quest");
                 });
@@ -1184,6 +1188,8 @@ namespace CodeBattleArena.Infrastructure.Migrations
 
             modelBuilder.Entity("CodeBattleArena.Domain.Players.Player", b =>
                 {
+                    b.Navigation("PayerItems");
+
                     b.Navigation("PlayerItems");
 
                     b.Navigation("PlayerQuests");

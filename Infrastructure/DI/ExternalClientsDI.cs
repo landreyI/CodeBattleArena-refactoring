@@ -1,5 +1,8 @@
-﻿using CodeBattleArena.Application.Common.Interfaces;
+﻿using Amazon;
+using Amazon.S3;
+using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Infrastructure.AI.Services;
+using CodeBattleArena.Infrastructure.AWS.S3;
 using CodeBattleArena.Infrastructure.Judge0;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +14,17 @@ namespace CodeBattleArena.Infrastructure.DI
     {
         public static IServiceCollection AddExternalClients(this IServiceCollection services, IConfiguration config)
         {
+            var awsOptions = config.GetSection("AWS");
+            var s3Config = new AmazonS3Config
+            {
+                RegionEndpoint = RegionEndpoint.GetBySystemName(awsOptions["Region"])
+            };
+
+            services.AddSingleton<IAmazonS3>(sp =>
+                new AmazonS3Client(awsOptions["AccessKey"], awsOptions["SecretKey"], s3Config));
+
+            services.AddScoped<IFileStorageService, S3StorageService>();
+
             services.AddHttpClient<IJudge0Client, Judge0Client>(client =>
             {
                 client.BaseAddress = new Uri("https://judge0-ce.p.rapidapi.com/");

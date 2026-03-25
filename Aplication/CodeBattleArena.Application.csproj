@@ -30,6 +30,7 @@
     <Folder Include="Features\Game\EventHandlers\Internal\" />
     <Folder Include="Features\Game\Queries\" />
     <Folder Include="Features\Game\Specifications\" />
+    <Folder Include="Features\Items\Models\" />
     <Folder Include="Features\Notifications\Services\" />
     <Folder Include="Features\Players\Queries\" />
     <Folder Include="Features\ProgrammingTasks\EventHandlers\Internal\" />

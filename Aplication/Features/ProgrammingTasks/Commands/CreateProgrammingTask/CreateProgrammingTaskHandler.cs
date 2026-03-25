@@ -1,9 +1,6 @@
 ﻿
 using CodeBattleArena.Application.Common.Interfaces;
-using CodeBattleArena.Application.Features.Sessions.Commands.CreateSession;
-using CodeBattleArena.Application.Features.Sessions.Specifications;
 using CodeBattleArena.Domain.Common;
-using CodeBattleArena.Domain.Enums;
 using CodeBattleArena.Domain.ProgrammingTasks;
 using MediatR;
 
@@ -42,16 +39,15 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Commands.CreateP
             if(resultAddTestCases.IsFailure)
                 return Result<Guid>.Failure(resultAddTestCases.Error);
 
-            var resultAddLeanguages = task
-                .SyncTaskLanguages(request.TaskLanguages);
+            var resultAddLeanguages = task.SyncTaskLanguages(request.TaskLanguages);
             if (resultAddLeanguages.IsFailure)
                 return Result<Guid>.Failure(resultAddLeanguages.Error);
 
-            await _taskRepository.AddAsync(resultTask.Value, cancellationToken);
+            await _taskRepository.AddAsync(task, cancellationToken);
 
             await _unitOfWork.CommitAsync(cancellationToken);
 
-            return Result<Guid>.Success(resultTask.Value.Id);
+            return Result<Guid>.Success(task.Id);
         }
     }
 }

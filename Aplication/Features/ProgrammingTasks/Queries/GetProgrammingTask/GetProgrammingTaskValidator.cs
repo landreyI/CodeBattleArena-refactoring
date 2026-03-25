@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetProgrammingTask
 {
-    public class GetPlayerProgrammingTasksListValidator : AbstractValidator<GetProgrammingTaskQuery>
+    public class GetProgrammingTaskValidator : AbstractValidator<GetProgrammingTaskQuery>
     {
-        public GetPlayerProgrammingTasksListValidator()
+        public GetProgrammingTaskValidator()
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("ProgrammingTaskId is required.");
         }

@@ -1,5 +1,6 @@
 ﻿using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Enums;
+using CodeBattleArena.Domain.Items.Events.Integration;
 using CodeBattleArena.Domain.PlayerItems;
 
 namespace CodeBattleArena.Domain.Items
@@ -22,14 +23,31 @@ namespace CodeBattleArena.Domain.Items
 
         private Item() { } // Для EF
 
-        private Item(string name, TypeItem type, int? price)
+        private Item(
+        string name,
+        TypeItem type,
+        int? price,
+        string? imageUrl,
+        string? cssClass,
+        string? description)
         {
             Name = name;
             Type = type;
             PriceCoin = price;
+            ImageUrl = imageUrl;
+            CssClass = cssClass;
+            Description = description;
+
+            AddDomainEvent(new ItemCreatedIntegrationEvent(this));
         }
 
-        public static Result<Item> Create(string name, TypeItem type, int? price = default)
+        public static Result<Item> Create(
+            string name,
+            TypeItem type,
+            int? price = default,
+            string? imageUrl = default,
+            string? cssClass = default,
+            string? description = default)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return Result<Item>.Failure(new Error("item.invalid_name", "Item name cannot be empty."));
@@ -37,14 +55,48 @@ namespace CodeBattleArena.Domain.Items
             if (price.HasValue && price.Value < 0)
                 return Result<Item>.Failure(new Error("item.invalid_price", "The price cannot be negative."));
 
-            return Result<Item>.Success(new Item(name, type, price));
+            var finalImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? null : imageUrl.Trim();
+            var finalCssClass = string.IsNullOrWhiteSpace(cssClass) ? null : cssClass.Trim();
+            var finalDescription = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+
+            return Result<Item>.Success(new Item(
+                name,
+                type,
+                price,
+                finalImageUrl,
+                finalCssClass,
+                finalDescription));
         }
 
-        public Result UpdateDetails(string? description = default, string? imageUrl = default, string? cssClass = default)
+        public Result Update(
+            string? name,
+            TypeItem? type,
+            int? price = default,
+            string? imageUrl = default,
+            string? cssClass = default,
+            string? description = default)
         {
-            Description = description;
-            ImageUrl = imageUrl;
-            CssClass = cssClass;
+            if (!string.IsNullOrWhiteSpace(name))
+                Name = name;
+
+            if(type.HasValue)
+                Type = type.Value;
+
+            if (price.HasValue && price.Value < 0)
+                return Result<Item>.Failure(new Error("item.invalid_price", "The price cannot be negative."));
+            if(price.HasValue)
+                PriceCoin = price.Value;
+
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+                ImageUrl = imageUrl;
+
+            if (!string.IsNullOrWhiteSpace(cssClass))
+                CssClass = cssClass;
+
+            if (!string.IsNullOrWhiteSpace(description))
+                Description = description;
+
+            AddDomainEvent(new ItemUpdatedIntegrationEvent(this));
 
             return Result.Success();
         }
@@ -56,6 +108,12 @@ namespace CodeBattleArena.Domain.Items
 
             PriceCoin = newPrice;
             return Result.Success();
+        }
+
+        public void Delete()
+        {
+            // Мы передаем только Id, так как сущность скоро перестанет существовать
+            AddDomainEvent(new ItemDeletedIntegrationEvent(this.Id));
         }
 
         public bool IsPurchasable => PriceCoin.HasValue && PriceCoin > 0;

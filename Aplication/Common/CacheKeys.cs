@@ -1,4 +1,5 @@
 ﻿
+using CodeBattleArena.Application.Features.Items.Filters;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Filters;
 using CodeBattleArena.Application.Features.Sessions.Filters;
 
@@ -64,6 +65,46 @@ namespace CodeBattleArena.Application.Common
                        $"m{filter.MaxPeople ?? 10}:" +
                        $"ss{filter.SessionState ?? "any"}:" +
                        $"st{filter.Status ?? "any"}";
+            }
+        }
+
+        public static class Items
+        {
+            public const string Prefix = "items";
+            public const string ListTag = $"{Version}:{Prefix}:tag:list";
+            public const string AllTag = $"{Version}:{Prefix}:tag:all";
+
+            public static string Details(Guid id) => $"{Version}:{Prefix}:details:{id}";
+
+            public static string List(ItemFilter? filter)
+            {
+                if (filter == null) return $"{Version}:{Prefix}:list:all";
+
+                return $"{Version}:{Prefix}:list:p{filter.PageNumber}:s{filter.PageSize}:" +
+                       $"t{filter.Type ?? "any"}:" +
+                       $"c{filter.Coin ?? 100000}" +
+                       $"c{filter.IsCoinDescending ?? true}";
+            }
+            public static string PlayerList(Guid playerId, ItemFilter? filter)
+            {
+                if (filter == null) return $"{Version}:{Prefix}:list:all:player:{playerId}";
+
+                return $"{Version}:{Prefix}:list:player:{playerId}:p{filter.PageNumber}:s{filter.PageSize}:" +
+                       $"t{filter.Type ?? "any"}:" +
+                       $"c{filter.Coin ?? 100000}:" +
+                       $"c{filter.IsCoinDescending ?? true}";
+            }
+        }
+
+        public static class ProgrammingLanguage
+        {
+            public const string Prefix = "languages";
+            public const string ListTag = $"{Version}:{Prefix}:tag:list";
+            public const string AllTag = $"{Version}:{Prefix}:tag:all";
+
+            public static string List()
+            {
+                return $"{Version}:{Prefix}:list:all";
             }
         }
     }
