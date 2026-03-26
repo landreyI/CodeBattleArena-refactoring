@@ -18,19 +18,10 @@ namespace CodeBattleArena.Application.Common.Behaviours
 
             // Проверяем, успешно ли прошла команда
             // Мы проверяем свойство IsSuccess через рефлексию или паттерн-матчинг
-            if (response is Result { IsSuccess: true } || response is not Result)
+            if (response is Result { IsSuccess: true, WasModified: true })
             {
-                // Чистим ключи
-                foreach (var key in request.CacheKeys)
-                {
-                    await _cache.RemoveAsync(key, ct);
-                }
-
-                // Чистим теги
-                foreach (var tag in request.Tags)
-                {
-                    await _cache.RemoveByTagAsync(tag, ct);
-                }
+                foreach (var key in request.CacheKeys) await _cache.RemoveAsync(key, ct);
+                foreach (var tag in request.Tags) await _cache.RemoveByTagAsync(tag, ct);
             }
 
             return response;

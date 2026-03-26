@@ -5,6 +5,7 @@ interface PlayerEventHandlers {
     onFriendRequest?: (sender: Player) => void;
     onInvitationSession?: (session: Session) => void;
 }
+
 export interface ReceiveNotification {
     id: string;
     content: string;

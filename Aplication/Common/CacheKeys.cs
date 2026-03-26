@@ -1,5 +1,6 @@
 ﻿
 using CodeBattleArena.Application.Features.Items.Filters;
+using CodeBattleArena.Application.Features.Notifications.Filters;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Filters;
 using CodeBattleArena.Application.Features.Sessions.Filters;
 
@@ -105,6 +106,21 @@ namespace CodeBattleArena.Application.Common
             public static string List()
             {
                 return $"{Version}:{Prefix}:list:all";
+            }
+        }
+
+        public static class Notification
+        {
+            public const string Prefix = "notifications";
+            public const string ListTag = $"{Version}:{Prefix}:tag:list";
+            public const string AllTag = $"{Version}:{Prefix}:tag:all";
+
+            public static string PlayerList(Guid playerId, NotificationFilter? filter)
+            {
+                if (filter == null) return $"{Version}:{Prefix}:list:all:player:{playerId}";
+
+                return $"{Version}:{Prefix}:list:player:{playerId}:p{filter.PageNumber}:s{filter.PageSize}:" +
+                       $"t{filter.Type ?? "any"}";
             }
         }
     }

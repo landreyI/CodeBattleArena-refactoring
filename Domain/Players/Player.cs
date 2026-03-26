@@ -2,6 +2,7 @@
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Friendships;
 using CodeBattleArena.Domain.Items;
+using CodeBattleArena.Domain.Items.Events.Integration;
 using CodeBattleArena.Domain.Leagues;
 using CodeBattleArena.Domain.PlayerItems;
 using CodeBattleArena.Domain.PlayerQuests;
@@ -111,7 +112,7 @@ namespace CodeBattleArena.Domain.Players
 
             Wallet.Spend(item.PriceCoin!.Value);
 
-            // Здесь можно добавить доменное событие ItemPurchasedDomainEvent
+            AddDomainEvent(new ItemPurchasedIntegrationEvent(this, item));
             return Result.Success();
         }
 

@@ -74,11 +74,14 @@
         DaysInRow,          // Кол-во дней подряд
         LoginRequired       // Зайти в игру
     }
+
     public enum NotificationType
     {
         System,
         TaskGenerated,
         Achievement,
-        BattleInvite
+        BattleInvite,
+        Purchase,           //PlayerItem
+        Gift                //PlayerItem
     }
 }

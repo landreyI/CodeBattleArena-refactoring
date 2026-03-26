@@ -1,5 +1,6 @@
 ﻿using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Items;
+using CodeBattleArena.Domain.PlayerItems.Events.Integration;
 using CodeBattleArena.Domain.Players;
 
 namespace CodeBattleArena.Domain.PlayerItems
@@ -22,21 +23,21 @@ namespace CodeBattleArena.Domain.PlayerItems
 
         private PlayerItem() { } // Для EF
 
-        private PlayerItem(Guid playerId, Guid itemId, Guid payerId)
+        private PlayerItem(Guid recipientId, Guid itemId, Guid payerId)
         {
-            PlayerId = playerId;
+            PlayerId = recipientId;
             ItemId = itemId;
             PayerId = payerId;
             AcquiredAt = DateTime.UtcNow;
             IsEquipped = false;
 
-            // Здесь можно добавить доменное событие - оповещение новом предмете
+            AddDomainEvent(new ItemReceivedIntegrationEvent(this));
         }
 
-        public static Result<PlayerItem> Create(Guid playerId, Guid itemId, Guid payerId)
+        public static Result<PlayerItem> Create(Guid recipientId, Guid itemId, Guid payerId)
         {
-            if (playerId == Guid.Empty)
-                return Result<PlayerItem>.Failure(new Error("player_item.no_player", "Player ID cannot be empty."));
+            if (recipientId == Guid.Empty)
+                return Result<PlayerItem>.Failure(new Error("player_item.no_player", "Recipient ID cannot be empty."));
 
             if (itemId == Guid.Empty)
                 return Result<PlayerItem>.Failure(new Error("player_item.no_item", "Item ID cannot be empty."));
@@ -44,7 +45,7 @@ namespace CodeBattleArena.Domain.PlayerItems
             if (payerId == Guid.Empty)
                 return Result<PlayerItem>.Failure(new Error("player_item.no_payer", "Payer ID cannot be empty."));
 
-            return Result<PlayerItem>.Success(new PlayerItem(playerId, itemId, payerId));
+            return Result<PlayerItem>.Success(new PlayerItem(recipientId, itemId, payerId));
         }
 
         public Result Equip()

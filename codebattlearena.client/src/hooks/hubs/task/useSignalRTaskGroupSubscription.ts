@@ -24,5 +24,5 @@ export function useSignalRTaskGroupSubscription(
                     .catch(console.error);
             }
         };
-    }, [connection?.state, groupName]); // Следим за state — это важно!
+    }, [connection?.state, groupName]);
 }
