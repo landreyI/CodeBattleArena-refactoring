@@ -22,6 +22,8 @@ namespace CodeBattleArena.Application.Features.Items.Queries.GetItem
         {
             var spec = new ItemReadOnlySpec(request.Id);
             var item = await _itemRepository.GetBySpecAsync(spec, cancellationToken);
+            if (item is null)
+                return Result<ItemDto>.Failure(new Error("item.not_found", "Item not found", 404));
 
             return Result<ItemDto>.Success(_mapper.Map<ItemDto>(item));
         }

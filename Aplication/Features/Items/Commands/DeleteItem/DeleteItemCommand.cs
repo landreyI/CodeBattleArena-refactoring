@@ -5,7 +5,7 @@ using MediatR;
 
 namespace CodeBattleArena.Application.Features.Items.Commands.DeleteItem
 {
-    public record DeleteItemCommand(Guid Id) : IRequest<Result<bool>>, ICacheInvalidator
+    public record DeleteItemCommand(Guid Id) : IRequest<Result<bool>>, ICacheInvalidator, IStaffRequest
     {
         // Удаляем только одну конкретную карточку по ключу
         public string[] CacheKeys => [Common.CacheKeys.Items.Details(Id)];

@@ -23,6 +23,8 @@ namespace CodeBattleArena.Application.Features.Items.Queries.GetPlayerItem
         {
             var spec = new PlayerItemReadOnlySpec(request.PlayerId, request.ItemId);
             var playerItem = await _playerItemsRepository.GetBySpecAsync(spec, cancellationToken);
+            if (playerItem is null)
+                return Result<PlayerItemDto>.Failure(new Error("PlayerItem.not_found", "Player Item Task not found", 404));
 
             return Result<PlayerItemDto>.Success(_mapper.Map<PlayerItemDto>(playerItem));
         }

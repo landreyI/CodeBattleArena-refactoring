@@ -1,22 +1,18 @@
 ﻿
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Domain.Common;
-using CodeBattleArena.Domain.Enums;
 using MediatR;
 
-namespace CodeBattleArena.Application.Features.Items.Commands.CreateItem
+namespace CodeBattleArena.Application.Features.Leagues.Commands.CreateLeague
 {
-    public record CreateItemCommand(
+    public record CreateLeagueCommand(
         string Name,
-        TypeItem Type,
-        int? PriceCoin,
-        string? CssClass,
         string? ImageUrl,
-        string? Description
-
+        int MinWins,
+        int? MaxWins
     ) : IRequest<Result<Guid>>, ICacheInvalidator, IStaffRequest
     {
         // Удаляем ВСЕ списки, потому что состав изменился
-        public string[] Tags => [Common.CacheKeys.Items.ListTag];
+        public string[] Tags => [Common.CacheKeys.Leagues.ListTag];
     }
 }

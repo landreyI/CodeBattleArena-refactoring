@@ -12,7 +12,7 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Commands.UpdateP
         string? Name = null,
         string? Description = null,
         Difficulty? Difficulty = null
-    ) : IRequest<Result<bool>>, ICacheInvalidator
+    ) : IRequest<Result<bool>>, ICacheInvalidator, IStaffRequest
     {
         public IReadOnlyList<TestCaseInfo>? TestCases { get; init; }
         public IReadOnlyList<TaskLanguageInfo>? TaskLanguages { get; init; }

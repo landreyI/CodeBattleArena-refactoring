@@ -12,11 +12,11 @@ namespace CodeBattleArena.Application.Features.Items.Commands.UpdateItem
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Item name is required.")
                 .MaximumLength(100).WithMessage("Item name cannot exceed 100 characters.")
-                .When(x => x.Name != null); ;
+                .When(x => x.Name != null);
 
             RuleFor(x => x.Type)
                 .IsInEnum().WithMessage("Invalid item type specified.")
-                .When(x => x.Name != null); ;
+                .When(x => x.Name != null);
 
             RuleFor(x => x.PriceCoin)
                 .GreaterThanOrEqualTo(0).When(x => x.PriceCoin.HasValue)
@@ -31,11 +31,11 @@ namespace CodeBattleArena.Application.Features.Items.Commands.UpdateItem
 
             RuleFor(x => x.CssClass)
                 .MaximumLength(50).WithMessage("CSS class name cannot exceed 50 characters.")
-                .When(x => x.Name != null); ;
+                .When(x => x.Name != null);
 
             RuleFor(x => x.Description)
                 .MaximumLength(1000).WithMessage("Description cannot exceed 1000 characters.")
-                .When(x => x.Name != null); ;
+                .When(x => x.Name != null);
         }
     }
 }

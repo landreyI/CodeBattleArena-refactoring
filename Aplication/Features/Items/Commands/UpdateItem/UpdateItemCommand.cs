@@ -13,7 +13,7 @@ namespace CodeBattleArena.Application.Features.Items.Commands.UpdateItem
         int? PriceCoin,
         string? CssClass,
         string? ImageUrl,
-        string? Description) : IRequest<Result<bool>>, ICacheInvalidator
+        string? Description) : IRequest<Result<bool>>, ICacheInvalidator, IStaffRequest
     {
 
         // Удаляем только одну конкретную карточку по ключу

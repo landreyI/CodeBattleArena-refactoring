@@ -9,21 +9,15 @@ namespace CodeBattleArena.Application.Features.Items.Commands.CreateItem
     public class CreateItemHandler : IRequestHandler<CreateItemCommand, Result<Guid>>
     {
         private readonly IRepository<Item> _itemRepository;
-        private readonly IIdentityService _identityService;
         private readonly IUnitOfWork _unitOfWork;
-        public CreateItemHandler(IRepository<Item> itemRepository, IIdentityService identityService, IUnitOfWork unitOfWork)
+        public CreateItemHandler(IRepository<Item> itemRepository, IUnitOfWork unitOfWork)
         {
             _itemRepository = itemRepository;
-            _identityService = identityService;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
-            var currentPlayerId = _identityService.CurrentPlayerId();
-            if (!currentPlayerId.HasValue)
-                return Result<Guid>.Failure(new Error("auth.unauthorized", "User not found in context", 401));
-
             var resultItem = Item.Create(
                 request.Name,
                 request.Type,

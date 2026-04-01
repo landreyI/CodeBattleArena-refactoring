@@ -7,5 +7,7 @@
         public string? PhotoUrl { get; set; }
         public int MinWins { get; set; } = default;
         public int? MaxWins { get; set; }
+
+        public List<PlayerDto>? Players { get; set; }
     }
 }

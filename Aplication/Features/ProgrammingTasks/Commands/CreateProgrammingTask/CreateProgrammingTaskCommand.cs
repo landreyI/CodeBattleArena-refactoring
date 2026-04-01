@@ -11,7 +11,7 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Commands.CreateP
         string Name,
         string Description,
         Difficulty Difficulty
-    ) : IRequest<Result<Guid>>, ICacheInvalidator
+    ) : IRequest<Result<Guid>>, ICacheInvalidator, IStaffRequest
     {
         public IReadOnlyList<TestCaseInfo> TestCases { get; init; } = [];
         public IReadOnlyList<TaskLanguageInfo> TaskLanguages { get; init; } = [];

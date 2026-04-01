@@ -23,6 +23,8 @@ namespace CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetProgr
         {
             var spec = new ProgrammingTaskReadOnlySpec(request.Id);
             var programmingTask = await _programmingTaskRepository.GetBySpecAsync(spec, cancellationToken);
+            if (programmingTask is null)
+                return Result<ProgrammingTaskDto>.Failure(new Error("ProgrammingTask.not_found", "Programming Task not found", 404));
 
             return Result<ProgrammingTaskDto>.Success(_mapper.Map<ProgrammingTaskDto>(programmingTask));
         }

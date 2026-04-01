@@ -3,6 +3,7 @@ using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Features.Items.Commands.EquipItem;
 using CodeBattleArena.Application.Features.Items.Filters;
 using CodeBattleArena.Application.Features.Items.Queries.GetPlayerItemsList;
+using CodeBattleArena.Application.Features.Leagues.Queries.GetPlayerLeague;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Filters;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetPlayerProgrammingTasksList;
 using CodeBattleArena.Application.Features.Sessions.Filters;
@@ -43,5 +44,8 @@ namespace CodeBattleArena.Api.Controllers
         public async Task<IActionResult> EquipItem([FromRoute] Guid itemId, CancellationToken ct)
             => HandleResult(await _mediator.Send(new EquipItemCommand(itemId), ct));
 
+        [HttpGet("{id:guid}/league")]
+        public async Task<IActionResult> GetPlayerLeague([FromRoute] Guid id, CancellationToken ct)
+            => HandleResult(await _mediator.Send(new GetPlayerLeagueQuery(id), ct));
     }
 }

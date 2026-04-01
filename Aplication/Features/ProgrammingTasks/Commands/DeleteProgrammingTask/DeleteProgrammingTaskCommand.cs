@@ -5,7 +5,7 @@ using MediatR;
 
 namespace CodeBattleArena.Application.Features.ProgrammingTasks.Commands.DeleteProgrammingTask
 {
-    public record DeleteProgrammingTaskCommand(Guid Id) : IRequest<Result<bool>>, ICacheInvalidator
+    public record DeleteProgrammingTaskCommand(Guid Id) : IRequest<Result<bool>>, ICacheInvalidator, IStaffRequest
     {
         // Удаляем только одну конкретную карточку по ключу
         public string[] CacheKeys => [Common.CacheKeys.Tasks.Details(Id)];

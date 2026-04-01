@@ -123,5 +123,19 @@ namespace CodeBattleArena.Application.Common
                        $"t{filter.Type ?? "any"}";
             }
         }
+
+        public static class Leagues
+        {
+            public const string Prefix = "leagues";
+            public const string ListTag = $"{Version}:{Prefix}:tag:list";
+
+            public const string AllTag = $"{Version}:{Prefix}:tag:all";
+
+            public static string Details(Guid id) => $"{Version}:{Prefix}:details:{id}";
+            public static string PlayerLeague(Guid palyerId) => $"{Version}:{Prefix}:player:league:{palyerId}";
+            public static string List() => $"{Version}:{Prefix}:list:simple";
+
+            public static string PlayersList() => $"{Version}:{Prefix}:list:players";
+        }
     }
 }

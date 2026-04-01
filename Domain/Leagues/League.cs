@@ -37,6 +37,32 @@ namespace CodeBattleArena.Domain.Leagues
             return Result<League>.Success(new League(name, minWins, maxWins, photoUrl));
         }
 
+        public Result Update(string? name = default, int? minWins = default, int? maxWins = default, string? photoUrl = default)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+                Name = name;
+
+            if (minWins.HasValue)
+            {
+                if (minWins.Value < 0)
+                    return Result.Failure(new Error("league.invalid_min_wins", "Minimum wins cannot be negative."));
+                MinWins = minWins.Value;
+            }
+            if (maxWins.HasValue)
+            {
+                if (maxWins.Value < 0)
+                    return Result.Failure(new Error("league.invalid_max_wins", "Maximum wins cannot be negative."));
+                if(maxWins.Value < MinWins)
+                    return Result.Failure(new Error("league.invalid_range", "Maximum wins cannot be less than minimum wins."));
+                MaxWins = maxWins;
+            }
+
+            if (!string.IsNullOrWhiteSpace(name))
+                PhotoUrl = photoUrl;
+
+            return Result.Success();
+        }
+
         public bool IsEligible(int victories)
         {
             bool meetsMin = victories >= MinWins;
