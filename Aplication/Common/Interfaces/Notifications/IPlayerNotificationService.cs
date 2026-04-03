@@ -6,5 +6,6 @@ namespace CodeBattleArena.Application.Common.Interfaces.Notifications
     {
         Task NotifyFriendRequestAsync(Guid idReceiver, PlayerDto sender);
         Task NotifyInvitationSessionAsync(Guid idPlayer, SessionDto sessionDto);
+        Task NotifyItemEquippedAsync(Guid idPlayer, ItemDto item);
     }
 }

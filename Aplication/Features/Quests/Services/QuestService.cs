@@ -28,16 +28,15 @@ namespace CodeBattleArena.Application.Features.Quests.Services
 
             foreach (var playerQuest in activeQuests)
             {
-                // 2. Ищем стратегию, которая:
-                // а) Поддерживает тип этого квеста (например, DailyMatch)
-                // б) Умеет обрабатывать пришедшее событие (например, MatchPlayed)
+                // Ищем стратегию, которая:
+                // Поддерживает тип этого квеста (например, DailyMatch)
+                // Умеет обрабатывать пришедшее событие (например, MatchPlayed)
                 var strategy = _strategies.FirstOrDefault(s =>
                     s.SupportedTaskType == playerQuest.Quest.Type &&
                     s.CanHandle(context.EventType));
 
                 if (strategy != null)
                 {
-                    // 3. Передаем управление стратегии
                     // Она обновит состояние PlayerQuest в памяти
                     await strategy.ProcessAsync(playerQuest, context, ct);
                 }

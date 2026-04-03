@@ -2,8 +2,13 @@
 using CodeBattleArena.Application.Common.Interfaces;
 using CodeBattleArena.Application.Features.Items.Commands.EquipItem;
 using CodeBattleArena.Application.Features.Items.Filters;
+using CodeBattleArena.Application.Features.Items.Queries.GetPlayerActiveItemsList;
 using CodeBattleArena.Application.Features.Items.Queries.GetPlayerItemsList;
 using CodeBattleArena.Application.Features.Leagues.Queries.GetPlayerLeague;
+using CodeBattleArena.Application.Features.Players.Commands.UpdatePlayer;
+using CodeBattleArena.Application.Features.Players.Filters;
+using CodeBattleArena.Application.Features.Players.Queries.GetPlayer;
+using CodeBattleArena.Application.Features.Players.Queries.GetPlayersList;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Filters;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Queries.GetPlayerProgrammingTasksList;
 using CodeBattleArena.Application.Features.Sessions.Filters;
@@ -27,6 +32,19 @@ namespace CodeBattleArena.Api.Controllers
             _identityService = identityService;
         }
 
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken ct)
+            => HandleResult(await _mediator.Send(new GetPlayerQuery(id), ct));
+
+        [HttpGet]
+        public async Task<IActionResult> GetPlayersList([FromQuery] PlayerFilter filter, CancellationToken ct)
+            => HandleResult(await _mediator.Send(new GetPlayersListQuery(filter), ct));
+
+        [Authorize]
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Edit([FromRoute] Guid id, [FromBody] UpdatePlayerCommand command, CancellationToken ct)
+            => HandleResult(await _mediator.Send(command, ct));
+
         [HttpGet("{id:guid}/sessions")]
         public async Task<IActionResult> GetPlayerSessionHistory([FromRoute] Guid id, [FromQuery] SessionFilter filter, CancellationToken ct)
             => HandleResult(await _mediator.Send(new GetPlayerSessionHistoryQuery(id, filter), ct));
@@ -35,9 +53,13 @@ namespace CodeBattleArena.Api.Controllers
         public async Task<IActionResult> GetPlayerTasks([FromRoute] Guid id, [FromQuery] ProgrammingTaskFilter filter, CancellationToken ct)
             => HandleResult(await _mediator.Send(new GetPlayerProgrammingTasksListQuery(id, filter), ct));
 
-        [HttpGet("{id:guid}/items")] // Get List<PlayerItemDto>
+        [HttpGet("{id:guid}/items")]
         public async Task<IActionResult> GetPlayerItems([FromRoute] Guid id, [FromQuery] ItemFilter filter, CancellationToken ct)
            => HandleResult(await _mediator.Send(new GetPlayerItemsListQuery(id, filter), ct));
+
+        [HttpGet("{id:guid}/active-items")]
+        public async Task<IActionResult> GetPlayerActiveItems([FromRoute] Guid id, CancellationToken ct)
+           => HandleResult(await _mediator.Send(new GetPlayerActiveItemsListQuery(id), ct));
 
         [Authorize]
         [HttpPut("inventory/{itemId:guid}/equip")]

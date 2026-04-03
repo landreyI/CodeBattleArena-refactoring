@@ -6,6 +6,8 @@ namespace CodeBattleArena.Application.Features.Sessions.Commands.UpdateSession
     {
         public UpdateSessionValidator()
         {
+            RuleFor(x => x.Id).NotEmpty().WithMessage("SessionId is required.");
+
             RuleFor(x => x.Name)
                 .NotEmpty().MaximumLength(20)
                 .WithMessage("Name session cannot be longer than 20 characters..")

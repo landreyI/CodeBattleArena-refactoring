@@ -22,5 +22,9 @@ namespace CodeBattleArena.Infrastructure.SignalR.Services
         {
             await _hubContext.Clients.User(idPlayer.ToString()).SendAsync("InvitationSession", session);
         }
+        public async Task NotifyItemEquippedAsync(Guid idPlayer, ItemDto item)
+        {
+            await _hubContext.Clients.User(idPlayer.ToString()).SendAsync("ItemEquipped", item);
+        }
     }
 }

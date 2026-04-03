@@ -1,5 +1,4 @@
 ﻿
-using Amazon.S3.Model;
 using CodeBattleArena.Application.Features.Items.Commands.PurchaseItem;
 using CodeBattleArena.Application.Features.Items.Filters;
 using CodeBattleArena.Application.Features.Items.Queries.GetItem;

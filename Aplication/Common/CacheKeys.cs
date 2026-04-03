@@ -1,6 +1,7 @@
 ﻿
 using CodeBattleArena.Application.Features.Items.Filters;
 using CodeBattleArena.Application.Features.Notifications.Filters;
+using CodeBattleArena.Application.Features.Players.Filters;
 using CodeBattleArena.Application.Features.ProgrammingTasks.Filters;
 using CodeBattleArena.Application.Features.Sessions.Filters;
 
@@ -9,6 +10,24 @@ namespace CodeBattleArena.Application.Common
     public static class CacheKeys
     {
         private const string Version = "v1";
+
+        public static class Players
+        {
+            public const string Prefix = "players";
+            public const string ListTag = $"{Version}:{Prefix}:tag:list";
+            public const string AllTag = $"{Version}:{Prefix}:tag:all";
+
+            public static string Details(Guid id) => $"{Version}:{Prefix}:details:{id}";
+
+            public static string List(PlayerFilter? filter)
+            {
+                if (filter == null) return $"{Version}:{Prefix}:list:all";
+
+                return $"{Version}:{Prefix}:list:p{filter.PageNumber}:s{filter.PageSize}:" +
+                       $"t{filter.UserName ?? "any"}:" +
+                       $"c{filter.Level ?? 1}";
+            }
+        }
 
         public static class Tasks
         {
@@ -83,7 +102,7 @@ namespace CodeBattleArena.Application.Common
 
                 return $"{Version}:{Prefix}:list:p{filter.PageNumber}:s{filter.PageSize}:" +
                        $"t{filter.Type ?? "any"}:" +
-                       $"c{filter.Coin ?? 100000}" +
+                       $"c{filter.Coin ?? 100000}:" +
                        $"c{filter.IsCoinDescending ?? true}";
             }
             public static string PlayerList(Guid playerId, ItemFilter? filter)
@@ -94,6 +113,10 @@ namespace CodeBattleArena.Application.Common
                        $"t{filter.Type ?? "any"}:" +
                        $"c{filter.Coin ?? 100000}:" +
                        $"c{filter.IsCoinDescending ?? true}";
+            }
+            public static string PlayerActiveList(Guid playerId)
+            {
+                return $"{Version}:{Prefix}:list:active:player:{playerId}";
             }
         }
 

@@ -7,7 +7,7 @@ namespace CodeBattleArena.Application.Features.Items.Specifications
 {
     public class PlayerItemsListSpec : PlayerItemBaseSpec
     {
-        // Конструктор для списка конкретного игрока
+        // Конструкторы для списка конкретного игрока
         public PlayerItemsListSpec(Guid playerId, ItemFilter? filter = default) : base()
         {
             Query.Where(pi => pi.PlayerId == playerId)

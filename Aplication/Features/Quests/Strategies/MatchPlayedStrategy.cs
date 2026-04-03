@@ -12,18 +12,18 @@ namespace CodeBattleArena.Application.Features.Quests.Strategies
 
         public Task ProcessAsync(PlayerQuest playerQuest, QuestTriggerContext context, CancellationToken ct)
         {
-            // 1. Ищем параметр MatchesPerDay в твоей коллекции QuestParam
+            // Ищем параметр MatchesPerDay в твоей коллекции QuestParam
             var requiredParam = playerQuest.Quest.Params
                 .FirstOrDefault(p => p.Key == TaskParamKey.MatchesPerDay);
 
             if (requiredParam == null || !int.TryParse(requiredParam.Value, out var requiredCount))
                 return Task.CompletedTask;
 
-            // 2. Считаем прогресс
+            // Считаем прогресс
             var currentProgress = int.TryParse(playerQuest.ProgressValue, out var p) ? p : 0;
             currentProgress++;
 
-            // 3. Обновляем доменную сущность
+            // Обновляем доменную сущность
             playerQuest.UpdateProgress(currentProgress.ToString());
 
             if (currentProgress >= requiredCount)

@@ -3,11 +3,11 @@ using Ardalis.Specification;
 
 namespace CodeBattleArena.Application.Features.Players.Specifications
 {
-    public class PlayerIncludeItemsSpec : PlayerBaseSpec
+    public class PlayerReadOnlySpec : PlayerBaseSpec
     {
-        public PlayerIncludeItemsSpec(Guid id) : base(id)
+        public PlayerReadOnlySpec(Guid id) : base(id)
         {
-            Query.Include(p => p.PlayerItems)
+            Query.Include(p => p.League)
                  .AsNoTracking();
         }
     }

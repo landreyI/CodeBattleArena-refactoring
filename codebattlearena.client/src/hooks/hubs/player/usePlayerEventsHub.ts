@@ -1,9 +1,10 @@
-import { Player, Session } from "@/models/dbModels";
+import { Item, Player, Session } from "@/models/dbModels";
 import { useGlobalSignalR, useGlobalSignalREvent } from "@/contexts/GlobalSignalRProvider";
 
 interface PlayerEventHandlers {
     onFriendRequest?: (sender: Player) => void;
     onInvitationSession?: (session: Session) => void;
+    onItemEquipped?: (item: Item) => void;
 }
 
 export interface ReceiveNotification {
@@ -23,6 +24,10 @@ export function usePlayerEventsHub(handlers: PlayerEventHandlers) {
 
     useGlobalSignalREvent<[Session]>("InvitationSession", (session: Session) => {
         handlers.onInvitationSession?.(session);
+    });
+
+    useGlobalSignalREvent<[Item]>("ItemEquipped", (item: Item) => {
+        handlers.onItemEquipped?.(item);
     });
 
     useGlobalSignalREvent("UserOnline", (userId: string) => {

@@ -2,10 +2,10 @@
 using CodeBattleArena.Domain.Common;
 using CodeBattleArena.Domain.Friendships;
 using CodeBattleArena.Domain.Items;
-using CodeBattleArena.Domain.Items.Events.Integration;
 using CodeBattleArena.Domain.Leagues;
 using CodeBattleArena.Domain.PlayerItems;
 using CodeBattleArena.Domain.PlayerQuests;
+using CodeBattleArena.Domain.Players.Events.Integration;
 using CodeBattleArena.Domain.Players.Value_Objects;
 using CodeBattleArena.Domain.PlayerSessions;
 using CodeBattleArena.Domain.ProgrammingTasks;
@@ -112,7 +112,7 @@ namespace CodeBattleArena.Domain.Players
 
             Wallet.Spend(item.PriceCoin!.Value);
 
-            AddDomainEvent(new ItemPurchasedIntegrationEvent(this, item));
+            AddDomainEvent(new PlayerItemPurchasedIntegrationEvent(this, item));
             return Result.Success();
         }
 
@@ -122,6 +122,15 @@ namespace CodeBattleArena.Domain.Players
         /// </remarks>
         public Result EquipItem(PlayerItem playerItem)
         {
+            if (playerItem.PlayerId != this.Id)
+                return Result.Failure(new Error("player.item_not_owned", "This item does not belong to the player"));
+
+            if (!PlayerItems.Any(i => i.Id == playerItem.Id))
+                return Result.Failure(new Error("player.item_not_in_inventory", "Item not found in player's inventory list"));
+
+            if (playerItem.Item == null)
+                throw new InvalidOperationException("Item navigation property must be loaded to equip it.");
+
             var currentEquipped = PlayerItems
                 .FirstOrDefault(i => i.IsEquipped && i.Item!.Type == playerItem.Item!.Type);
 
@@ -134,6 +143,7 @@ namespace CodeBattleArena.Domain.Players
             var equipResult = playerItem.Equip();
             if (equipResult.IsFailure) return equipResult;
 
+            AddDomainEvent(new PlayerItemEquippedIntegrationEvent(this, playerItem.Item));
             return Result.Success();
         }
     }
